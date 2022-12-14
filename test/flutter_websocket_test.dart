@@ -10,6 +10,42 @@ class MockFlutterWebsocketPlatform
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+  
+  @override
+  Future<void> closeHeart() {
+    // TODO: implement closeHeart
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> connect({required String url}) {
+    // TODO: implement connect
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> connectClose() {
+    // TODO: implement connectClose
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> isOpen() {
+    // TODO: implement isOpen
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> openHeart() {
+    // TODO: implement openHeart
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> send([String? message]) {
+    // TODO: implement send
+    throw UnimplementedError();
+  }
 }
 
 void main() {
