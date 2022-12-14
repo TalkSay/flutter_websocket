@@ -1,13 +1,8 @@
 package io.talksay.flutter_websocket
 
 import android.app.Activity
-import android.app.Service
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.NonNull
@@ -40,8 +35,8 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     // web-socket related instances
     private var service: JWebSocketService? = null
-    private lateinit var binder: JWebSocketClientBinder
-    private lateinit var serviceConnect: ServiceConnection
+//    private lateinit var binder: JWebSocketClientBinder
+//    private lateinit var serviceConnect: ServiceConnection
     private lateinit var client: JWebSocketClient
 
 
@@ -104,8 +99,8 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val message = call.argument<String>("message")
                 if (message != null) {
                     service?.send(message)
-                }else{
-                    Log.d( FlutterWebsocketPlugin::class.java.simpleName, "The message is null");
+                } else {
+                    Log.d(FlutterWebsocketPlugin::class.java.simpleName, "The message is null");
                 }
             }
             "isOpen" -> {
@@ -131,30 +126,31 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     // start service
     private fun onStartConnectService(url: String) {
         try {
+            service = JWebSocketService;
+            connect(url)
+//            serviceConnect = object : ServiceConnection {
+//                override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+//                    Log.d(
+//                        FlutterWebsocketPlugin::class.java.simpleName,
+//                        "on service connected triggered"
+//                    );
+//                    // Plugin and service binding
+//                    if (p1 != null) {
+//                        binder = p1 as JWebSocketClientBinder
+//                        service = binder.getService()
+//                        connect(url)
+//                    } else {
+//                        Log.d(FlutterWebsocketPlugin::class.java.simpleName, "IBinder is null");
+//                    }
+//                }
+//
+//                override fun onServiceDisconnected(p0: ComponentName?) {
+//                    // destroy
+//                }
+//
+//            }
 
-            serviceConnect = object : ServiceConnection {
-                override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-                    Log.d(
-                        FlutterWebsocketPlugin::class.java.simpleName,
-                        "on service connected triggered"
-                    );
-                    // Plugin and service binding
-                    if (p1 != null) {
-                        binder = p1 as JWebSocketClientBinder
-                        service = binder.getService()
-                        connect(url)
-                    } else {
-                        Log.d(FlutterWebsocketPlugin::class.java.simpleName, "IBinder is null");
-                    }
-                }
-
-                override fun onServiceDisconnected(p0: ComponentName?) {
-                    // destroy
-                }
-
-            }
-
-            bindService()
+//            bindService()
         } catch (e: Exception) {
             Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
         }
@@ -204,17 +200,17 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     // Binding service
-    private fun bindService() {
-        try {
-            context.bindService(
-                Intent(context, JWebSocketService::class.java),
-                serviceConnect,
-                Service.BIND_AUTO_CREATE
-            )
-        } catch (e: Exception) {
-            Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
-        }
-    }
+//    private fun bindService() {
+//        try {
+//            context.bindService(
+//                Intent(context, JWebSocketService::class.java),
+//                serviceConnect,
+//                Service.BIND_AUTO_CREATE
+//            )
+//        } catch (e: Exception) {
+//            Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
+//        }
+//    }
 
     // Send data back to flutter as json String
     private fun sendToFlutter(json: String) {
