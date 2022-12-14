@@ -37,6 +37,7 @@ object JWebSocketService {
         client = object : JWebSocketClient(uri) {
             override fun onMessage(message: String?) {
                 if (message != null) {
+                    // Log.d(FlutterWebsocketPlugin::class.java.simpleName, "Message: $message")
                     doMessage(message)
                 }
             }
