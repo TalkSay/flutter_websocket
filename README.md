@@ -1,6 +1,13 @@
 # flutter_websocket
 
-A new Flutter plugin project.
+A TalkSay custom webscoket Flutter plugin project, that uses native components to interact with webscokets.
+
+## Adnroid approach
+- Dependencies
+    1. Gson - For JSON serialization.
+    2. Java-Websocket - as our websocket client, support reconnecting out of the box.
+
+- Need to add `Jcenter()` on to your repository to use `Java Websockets` 
 
 ## Getting Started
 
