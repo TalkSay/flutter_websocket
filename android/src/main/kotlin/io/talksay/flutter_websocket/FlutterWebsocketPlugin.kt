@@ -245,6 +245,7 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         // TODO reattach
+        activity = binding.activity
     }
 
     override fun onDetachedFromActivity() {

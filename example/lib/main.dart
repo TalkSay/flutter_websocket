@@ -22,7 +22,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final String _url = "wss://6f23-105-163-63-215.eu.ngrok.io/";
+  final String _url =
+      "wss://devapi.talksay.live/socket"; //"wss://6f23-105-163-63-215.eu.ngrok.io/";
   Timer? _timer;
   final _flutterWebsocketPlugin = FlutterWebsocket();
   final _socketClient = FlutterWebSocketUtil();
@@ -151,8 +152,8 @@ class _MyAppState extends State<MyApp> {
       _timer?.cancel();
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      var encoded = DateTime.now().toIso8601String();
-      _socketClient.send(message: encoded);
+      // var encoded = DateTime.now().toIso8601String();
+      _socketClient.send(message: "ping");
     });
   }
 
