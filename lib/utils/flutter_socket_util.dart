@@ -74,9 +74,9 @@ class FlutterWebSocketUtil {
   }
 
   /// Send a message
-  Future<void> send([String? message]) async {
+  Future<void> send({String? message}) async {
     if (message != null) {
-      await FlutterWebsocket().send(message);
+      await FlutterWebsocket().send(message: message);
     }
   }
 }

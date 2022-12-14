@@ -18,6 +18,7 @@ class JWebSocketService : Service() {
 
 
     var client: JWebSocketClient? = null
+    private val NOTIFICATION_REQUEST_CODE = 1999
 
     //gray keep alive
     class GrayInnerService : Service() {
@@ -41,7 +42,7 @@ class JWebSocketService : Service() {
             manager.createNotificationChannel(channel)
         }
         val intent = Intent(this, FlutterWebsocketPlugin::class.java)
-        val pi = PendingIntent.getActivity(this, 0, intent, 0)
+        val pi = PendingIntent.getActivity(this, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE)
         val notification = NotificationCompat.Builder(this, "myService")
             .setContentTitle("hi")
             .setContentText("hello")
@@ -148,7 +149,8 @@ class JWebSocketService : Service() {
     private val sendTime = (30 * 1000).toLong()
 
     // thread
-    private val mHandler: Handler = Handler(Looper.getMainLooper()) // TODO PATRICK -> check this out
+//    private val mHandler: Handler = Handler(Looper.getMainLooper()) // TODO PATRICK -> check this out
+    private val mHandler: Handler = Handler() // TODO PATRICK -> check this out
 
     // perform tasks
     private val heartBeatRunnable: Runnable = object : Runnable {

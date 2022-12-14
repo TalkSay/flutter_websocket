@@ -38,7 +38,7 @@ class MethodChannelFlutterWebsocket extends FlutterWebsocketPlatform {
   }
 
   @override
-  Future<void> send([String? message]) async {
+  Future<void> send({String? message}) async {
     if (message != null) {
       await methodChannel.invokeMethod("send", {"message": message});
     }

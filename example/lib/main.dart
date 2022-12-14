@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -20,7 +22,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  String _url = "";
+  final String _url = "wss://6f23-105-163-63-215.eu.ngrok.io/";
+  Timer? _timer;
   final _flutterWebsocketPlugin = FlutterWebsocket();
   final _socketClient = FlutterWebSocketUtil();
 
@@ -50,6 +53,12 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _platformVersion = platformVersion;
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -90,6 +99,7 @@ class _MyAppState extends State<MyApp> {
                       print(url);
                       print('ON OPEN');
                     }
+                    pingPong();
                   },
                   onError: (String? message) {
                     if (kDebugMode) {
@@ -103,20 +113,46 @@ class _MyAppState extends State<MyApp> {
             ),
             customButton(
               "Disconnect",
-              () {},
+              () {
+                _socketClient.close();
+              },
             ),
             customButton(
               "Open heartbeat",
-              () {},
+              () {
+                _socketClient.openHeart();
+              },
             ),
             customButton(
               "Is connected?",
-              () {},
+              () async {
+                bool isConnected = await FlutterWebsocket().isOpen();
+                print('IS CONNECTED');
+                print(isConnected);
+                print('IS CONNECTED');
+              },
+            ),
+            customButton(
+              "Sink message",
+              () async {
+                var encoded = DateTime.now().toIso8601String();
+                await _socketClient.send(message: encoded);
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void pingPong() {
+    if (_timer != null) {
+      _timer?.cancel();
+    }
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      var encoded = DateTime.now().toIso8601String();
+      _socketClient.send(message: encoded);
+    });
   }
 
   Widget customButton(String button, VoidCallback onTap) {

@@ -43,7 +43,7 @@ abstract class FlutterWebsocketPlatform extends PlatformInterface {
     throw UnimplementedError('closeHeart() has not been implemented.');
   }
 
-  Future<void> send([String? message]) async {
+  Future<void> send({String? message}) async {
     throw UnimplementedError('send() has not been implemented.');
   }
 

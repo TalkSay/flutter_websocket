@@ -1,6 +1,7 @@
 package io.talksay.flutter_websocket
 
 import android.app.Activity
+import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -62,7 +63,10 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "connect" -> {
                 val url = call.argument<String>("url")
                 if (url != null) {
-                    Log.d(FlutterWebsocketPlugin::class.java.simpleName, "Initialize connection:$url")
+                    Log.d(
+                        FlutterWebsocketPlugin::class.java.simpleName,
+                        "Initialize connection:$url"
+                    )
                     onStartConnectService(url)
                 }
 
@@ -75,10 +79,16 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     if (isOpen()) {
                         service!!.openHeart()
                     } else {
-                        Log.d(FlutterWebsocketPlugin::class.java.simpleName, "please connect first socket")
+                        Log.d(
+                            FlutterWebsocketPlugin::class.java.simpleName,
+                            "please connect first socket"
+                        )
                     }
                 } else {
-                    Log.d(FlutterWebsocketPlugin::class.java.simpleName, "please connect first socket")
+                    Log.d(
+                        FlutterWebsocketPlugin::class.java.simpleName,
+                        "please connect first socket"
+                    )
                 }
 
             }
@@ -94,6 +104,8 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val message = call.argument<String>("message")
                 if (message != null) {
                     service?.send(message)
+                }else{
+                    Log.d( FlutterWebsocketPlugin::class.java.simpleName, "The message is null");
                 }
             }
             "isOpen" -> {
@@ -104,6 +116,7 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
         }
     }
+
     // Is it already connected
     private fun isOpen(): Boolean {
         var res = false
@@ -114,30 +127,46 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
         return res
     }
+
     // start service
     private fun onStartConnectService(url: String) {
+        try {
 
-        serviceConnect = object : ServiceConnection {
-            override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-                // Plugin and service binding
-                if (p1 != null) {
-                    binder = p1 as JWebSocketClientBinder
-                    service = binder.getService()
-                    connect(url)
+            serviceConnect = object : ServiceConnection {
+                override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+                    Log.d(
+                        FlutterWebsocketPlugin::class.java.simpleName,
+                        "on service connected triggered"
+                    );
+                    // Plugin and service binding
+                    if (p1 != null) {
+                        binder = p1 as JWebSocketClientBinder
+                        service = binder.getService()
+                        connect(url)
+                    } else {
+                        Log.d(FlutterWebsocketPlugin::class.java.simpleName, "IBinder is null");
+                    }
                 }
+
+                override fun onServiceDisconnected(p0: ComponentName?) {
+                    // destroy
+                }
+
             }
 
-            override fun onServiceDisconnected(p0: ComponentName?) {
-                // destroy
-            }
-
+            bindService()
+        } catch (e: Exception) {
+            Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
         }
-        bindService()
     }
 
     // connect
     private fun connect(socketUrl: String) {
-        service?.initSocketClient(socketUrl, { url -> connectSuccess(url) }, { code, reason, remote -> connectClose(code, reason, remote) }, { message: String -> connectError(message) }) { message: String ->
+        service?.initSocketClient(
+            socketUrl,
+            { url -> connectSuccess(url) },
+            { code, reason, remote -> connectClose(code, reason, remote) },
+            { message: String -> connectError(message) }) { message: String ->
             connectMessage(message)
         }
         client = service?.client!!
@@ -173,10 +202,18 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         val result = SinksResult("connectMessage", message)
         sendToFlutter(gson.toJson(result))
     }
+
     // Binding service
     private fun bindService() {
-        val intent = Intent(context, JWebSocketService::class.java)
-        context.bindService(intent, serviceConnect, Context.BIND_AUTO_CREATE)
+        try {
+            context.bindService(
+                Intent(context, JWebSocketService::class.java),
+                serviceConnect,
+                Service.BIND_AUTO_CREATE
+            )
+        } catch (e: Exception) {
+            Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
+        }
     }
 
     // Send data back to flutter as json String
@@ -185,6 +222,7 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             sinks.success(json)
         }
     }
+
     private val eventStream: EventChannel.StreamHandler = object : EventChannel.StreamHandler {
         override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
             if (events != null) {
