@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
                   },
                   onMessage: (String? message) {
                     if (kDebugMode) {
-                      print('ON MESSAGE');
+                      print('\n\nON MESSAGE');
                       print(message);
                       print('ON MESSAGE');
                     }
