@@ -99,6 +99,7 @@ class _MyAppState extends State<MyApp> {
                       print(url);
                       print('ON OPEN');
                     }
+                    _socketClient.openHeart();
                     pingPong();
                   },
                   onError: (String? message) {
