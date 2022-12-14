@@ -22,7 +22,7 @@ class FlutterWebSocketUtil {
 
   //-----------------------------------------------------
 
-  // 连接
+  // connect
   Future<void> connect(
     String url, {
     ConnectError? onError,
