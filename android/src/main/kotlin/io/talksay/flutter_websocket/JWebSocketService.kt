@@ -97,7 +97,7 @@ object JWebSocketService {
 
     // heartbeat interval
     // TODO extract the interval time to be configurable
-    private val sendTime = (5 * 100).toLong()
+    private val sendTime = (8 * 100).toLong()
 
     // thread
     private val mHandler: Handler = Handler(Looper.getMainLooper())
