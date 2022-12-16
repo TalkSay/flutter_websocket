@@ -25,6 +25,7 @@ class FlutterWebSocketUtil {
   // connect
   Future<void> connect(
     String url, {
+    int? connectionTimeout,
     ConnectError? onError,
     ConnectClose? onClose,
     ConnectOpen? onOpen,
@@ -54,7 +55,10 @@ class FlutterWebSocketUtil {
         }
       }
     });
-    await FlutterWebsocket().connect(url: url);
+    await FlutterWebsocket().connect(
+      url: url,
+      connectionTimeout: connectionTimeout,
+    );
   }
 
   /// Disconnect
