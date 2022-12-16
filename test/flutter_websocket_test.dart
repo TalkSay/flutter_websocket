@@ -7,13 +7,49 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockFlutterWebsocketPlatform
     with MockPlatformInterfaceMixin
     implements FlutterWebsocketPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<void> closeHeart() {
+    // TODO: implement closeHeart
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> connect({required String url, int? connectionTimeout}) {
+    // TODO: implement connect
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> connectClose() {
+    // TODO: implement connectClose
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> isOpen() {
+    // TODO: implement isOpen
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openHeart() {
+    // TODO: implement openHeart
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> send({String? message}) {
+    // TODO: implement send
+    throw UnimplementedError();
+  }
 }
 
 void main() {
-  final FlutterWebsocketPlatform initialPlatform = FlutterWebsocketPlatform.instance;
+  final FlutterWebsocketPlatform initialPlatform =
+      FlutterWebsocketPlatform.instance;
 
   test('$MethodChannelFlutterWebsocket is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelFlutterWebsocket>());
