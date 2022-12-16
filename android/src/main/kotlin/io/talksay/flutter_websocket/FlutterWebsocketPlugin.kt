@@ -69,6 +69,9 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 //                    onStartConnectService(url)
                 }
             }
+            "sendPing" -> {
+                service?.sendPing()
+            }
             "closeConnect" -> {
                 service?.closeConnect()
             }

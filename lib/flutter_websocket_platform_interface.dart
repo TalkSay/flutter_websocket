@@ -31,6 +31,10 @@ abstract class FlutterWebsocketPlatform extends PlatformInterface {
     throw UnimplementedError('connect() has not been implemented.');
   }
 
+  Future<void> sendPing() {
+    throw UnimplementedError('sendPing() has not been implemented.');
+  }
+
   Future<void> connectClose() {
     throw UnimplementedError('connectClose() has not been implemented.');
   }

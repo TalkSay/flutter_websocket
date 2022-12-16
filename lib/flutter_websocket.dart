@@ -12,6 +12,10 @@ class FlutterWebsocket {
     );
   }
 
+  Future<void> sendPing() {
+    return FlutterWebsocketPlatform.instance.sendPing();
+  }
+
   Future<void> connectClose() {
     return FlutterWebsocketPlatform.instance.connectClose();
   }

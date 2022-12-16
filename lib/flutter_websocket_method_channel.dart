@@ -17,6 +17,11 @@ class MethodChannelFlutterWebsocket extends FlutterWebsocketPlatform {
   }
 
   @override
+  Future<void> sendPing() async {
+    await methodChannel.invokeMethod<String>('sendPing');
+  }
+
+  @override
   Future<void> connect({required String url, int? connectionTimeout}) async {
     assert(url.isNotEmpty, "Connection url can't be empty");
     await methodChannel.invokeMethod('connect', {

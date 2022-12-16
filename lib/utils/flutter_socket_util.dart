@@ -72,6 +72,11 @@ class FlutterWebSocketUtil {
     await FlutterWebsocket().openHeart();
   }
 
+  /// send ping
+  Future<void> sendPing() async {
+    await FlutterWebsocket().sendPing();
+  }
+
   /// turn off heartbeat
   Future<void> closeHeart() async {
     await FlutterWebsocket().closeHeart();

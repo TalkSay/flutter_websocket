@@ -4,13 +4,19 @@ package io.talksay.flutter_websocket
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import org.java_websocket.WebSocket
+import org.java_websocket.framing.Framedata
+import org.java_websocket.framing.PingFrame
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
+import java.nio.ByteBuffer
+
 
 /// socket Long connection service
 object JWebSocketService {
 
     var client: JWebSocketClient? = null
+
 
     /**
      * Initialize the websocket connection
@@ -23,6 +29,9 @@ object JWebSocketService {
         error: (message: String) -> Unit,
         doMessage: (message: String) -> Unit
     ) {
+//        var header: HashMap<String, String> = HashMap<String, String>()
+//        header["Upgrade"] = "websocket"
+//        header["Sec-WebSocket-Extensions"] = "permessage-deflate; client_max_window_bits"
         Log.d("FlutterWebsocketPlugin", "Whether the client is empty:${client == null}")
         if (client != null) {
             if (client!!.isOpen) {
@@ -35,6 +44,16 @@ object JWebSocketService {
         }
         Log.d(FlutterWebsocketPlugin::class.java.simpleName, "connecting...")
         val uri = URI.create(url)
+//        client.addHeader()
+//        client?.addHeader("Pragma", "no-cache")
+//        client?.addHeader("Origin", " https://dev.talksay.live")
+//        client?.addHeader("Accept-Encoding", "gzip, deflate, br")
+//        client?.addHeader("Accept-Language", "en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4")
+//        client?.addHeader("Upgrade", "websocket")
+//        client?.addHeader("Cache-Control", "no-cache");
+//        client?.addHeader("Connection", "Upgrade");
+//        client?.addHeader("Sec-WebSocket-Version", "13");
+//        client?.addHeader("Sec-WebSocket-Extensions", "permessage-deflate; client_max_window_bits")
         client = object : JWebSocketClient(uri) {
             override fun onMessage(message: String?) {
                 if (message != null) {
@@ -44,6 +63,7 @@ object JWebSocketService {
             }
 
             override fun onOpen(handshakedata: ServerHandshake?) {
+
                 success(url)
             }
 
@@ -59,7 +79,31 @@ object JWebSocketService {
                 }
             }
 
+             override fun onPreparePing(conn: WebSocket?): PingFrame {
+//                 return super.onPreparePing(conn)
+                 val frame = PingFrame()
+                 val pingBuffer = byteArrayOf()
+                 frame.setPayload(ByteBuffer.wrap(pingBuffer))
+                 return frame;
+             }
+
+            override fun onWebsocketPing(conn: WebSocket?, f: Framedata?) {
+                Log.d(FlutterWebsocketPlugin::class.java.simpleName, ">>WE ARE PING<<:")
+                super.onWebsocketPing(conn, f)
+            }
+
+            override fun onWebsocketPong(conn: WebSocket?, f: Framedata?) {
+                f?.toString()?.let { Log.d(FlutterWebsocketPlugin::class.java.simpleName, it) }
+//                val frame = PingFrame()
+//                val pingBuffer = byteArrayOf()
+//                frame.setPayload(ByteBuffer.wrap(pingBuffer))
+//                conn?.sendFrame(frame)
+//                super.onWebsocketPong(conn, f)
+            }
         }
+//        client.draft.
+//        client.sendPing()
+
         client?.connectionLostTimeout = connectionTimeout;
         connect()
     }
@@ -112,6 +156,9 @@ object JWebSocketService {
                 if (client!!.isClosed) {
                     reconnectWs()
                 }
+//                else{
+////                    client!!.sendPing();
+//                }
             }
             mHandler.postDelayed(this, sendTime)
         }
@@ -158,6 +205,18 @@ object JWebSocketService {
             client = null
         }
 
+    }
+
+    fun sendPing() {
+        try {
+            val frame = PingFrame()
+            val pingBuffer = byteArrayOf()
+            frame.setPayload(ByteBuffer.wrap(pingBuffer))
+            frame.toString().let { Log.d(FlutterWebsocketPlugin::class.java.simpleName, it) }
+            client?.sendFrame(frame)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 }
