@@ -1,15 +1,19 @@
 package io.talksay.flutter_websocket
 
 
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresApi
 import org.java_websocket.WebSocket
 import org.java_websocket.framing.Framedata
 import org.java_websocket.framing.PingFrame
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutionException
 
 
 /// socket Long connection service
@@ -17,6 +21,11 @@ object JWebSocketService {
 
     var client: JWebSocketClient? = null
 
+    @Volatile
+    var awaitedResponse: CompletableFuture<String>? = null
+
+    @Volatile
+    var expectedType: String? = null
 
     /**
      * Initialize the websocket connection
@@ -55,10 +64,16 @@ object JWebSocketService {
 //        client?.addHeader("Sec-WebSocket-Version", "13");
 //        client?.addHeader("Sec-WebSocket-Extensions", "permessage-deflate; client_max_window_bits")
         client = object : JWebSocketClient(uri) {
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun onMessage(message: String?) {
                 if (message != null) {
-                    // Log.d(FlutterWebsocketPlugin::class.java.simpleName, "Message: $message")
-                    doMessage(message)
+                    if (awaitedResponse != null && expectedType != null && message.startsWith(expectedType!!)) {
+                        awaitedResponse!!.complete(message)
+                        awaitedResponse = null
+                        expectedType = null
+                    } else {
+                        doMessage(message)
+                    }
                 }
             }
 
@@ -171,6 +186,23 @@ object JWebSocketService {
     fun send(message: String) {
         if (client != null && client!!.isOpen) {
             client!!.send(message)
+        }
+    }
+
+
+    /**
+     * Send a message and wait response
+     */
+    @RequiresApi(Build.VERSION_CODES.N)
+    @Throws(InterruptedException::class)
+    open fun sendAwait(query: String?, type: String): String? {
+        awaitedResponse = CompletableFuture()
+        expectedType = type
+        send(query!!)
+        return try {
+            awaitedResponse!!.get()
+        } catch (e: ExecutionException) {
+            throw RuntimeException(e.cause)
         }
     }
 

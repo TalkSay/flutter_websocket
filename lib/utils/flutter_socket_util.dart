@@ -88,6 +88,14 @@ class FlutterWebSocketUtil {
       await FlutterWebsocket().send(message: message);
     }
   }
+
+  /// Send a message async
+  Future<String?> sendAwait({String? message, String? expected}) async {
+    return await FlutterWebsocket().sendAwait(
+      message: message,
+      expected: expected,
+    );
+  }
 }
 
 /// Connection failure callback

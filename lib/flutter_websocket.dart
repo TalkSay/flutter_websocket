@@ -32,6 +32,13 @@ class FlutterWebsocket {
     return FlutterWebsocketPlatform.instance.send(message: message);
   }
 
+  Future<String?> sendAwait({String? message, String? expected}) async {
+    return FlutterWebsocketPlatform.instance.sendAwait(
+      message: message,
+      expected: expected,
+    );
+  }
+
   Future<bool> isOpen() async {
     return FlutterWebsocketPlatform.instance.isOpen();
   }

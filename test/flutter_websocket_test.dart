@@ -51,6 +51,12 @@ class MockFlutterWebsocketPlatform
     // TODO: implement sendPing
     throw UnimplementedError();
   }
+  
+  @override
+  Future<String?> sendAwait({String? message, String? expected}) {
+    // TODO: implement sendAwait
+    throw UnimplementedError();
+  }
 }
 
 void main() {

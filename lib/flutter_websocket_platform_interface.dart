@@ -51,6 +51,10 @@ abstract class FlutterWebsocketPlatform extends PlatformInterface {
     throw UnimplementedError('send() has not been implemented.');
   }
 
+  Future<String?> sendAwait({String? message, String? expected}) {
+    throw UnimplementedError('sendAwait() has not been implemented.');
+  }
+
   Future<bool> isOpen() async {
     throw UnimplementedError('isOpen() has not been implemented.');
   }

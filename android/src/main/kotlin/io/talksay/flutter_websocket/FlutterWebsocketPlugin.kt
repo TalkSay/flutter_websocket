@@ -2,10 +2,12 @@ package io.talksay.flutter_websocket
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -51,6 +53,7 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         eventChannel.setStreamHandler(eventStream)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "getPlatformVersion" -> {
@@ -105,6 +108,16 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val message = call.argument<String>("message")
                 if (message != null) {
                     service?.send(message)
+                } else {
+                    Log.d(FlutterWebsocketPlugin::class.java.simpleName, "The message is null");
+                }
+            }
+            "sendAsync" -> {
+                val message = call.argument<String>("message")
+                val expected = call.argument<String>("expected")
+                if (message != null && expected != null) {
+                    val response = service?.sendAwait(message, expected)
+                    result.success(response)
                 } else {
                     Log.d(FlutterWebsocketPlugin::class.java.simpleName, "The message is null");
                 }
