@@ -35,7 +35,8 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     // web-socket related instances
     private var service: JWebSocketService? = null
-//    private lateinit var binder: JWebSocketClientBinder
+
+    //    private lateinit var binder: JWebSocketClientBinder
 //    private lateinit var serviceConnect: ServiceConnection
     private lateinit var client: JWebSocketClient
 
@@ -57,14 +58,16 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
             "connect" -> {
                 val url = call.argument<String>("url")
-                if (url != null) {
+                val connectionTimeout = call.argument<Int>("connectionTimeout")
+                if (url != null && connectionTimeout != null) {
                     Log.d(
                         FlutterWebsocketPlugin::class.java.simpleName,
                         "Initialize connection:$url"
                     )
-                    onStartConnectService(url)
+                    service = JWebSocketService;
+                    connect(url, connectionTimeout)
+//                    onStartConnectService(url)
                 }
-
             }
             "closeConnect" -> {
                 service?.closeConnect()
@@ -124,42 +127,43 @@ class FlutterWebsocketPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     // start service
-    private fun onStartConnectService(url: String) {
-        try {
-            service = JWebSocketService;
-            connect(url)
-//            serviceConnect = object : ServiceConnection {
-//                override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-//                    Log.d(
-//                        FlutterWebsocketPlugin::class.java.simpleName,
-//                        "on service connected triggered"
-//                    );
-//                    // Plugin and service binding
-//                    if (p1 != null) {
-//                        binder = p1 as JWebSocketClientBinder
-//                        service = binder.getService()
-//                        connect(url)
-//                    } else {
-//                        Log.d(FlutterWebsocketPlugin::class.java.simpleName, "IBinder is null");
-//                    }
-//                }
+//    private fun onStartConnectService(url: String) {
+//        try {
+//            service = JWebSocketService;
+//            connect(url)
+////            serviceConnect = object : ServiceConnection {
+////                override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+////                    Log.d(
+////                        FlutterWebsocketPlugin::class.java.simpleName,
+////                        "on service connected triggered"
+////                    );
+////                    // Plugin and service binding
+////                    if (p1 != null) {
+////                        binder = p1 as JWebSocketClientBinder
+////                        service = binder.getService()
+////                        connect(url)
+////                    } else {
+////                        Log.d(FlutterWebsocketPlugin::class.java.simpleName, "IBinder is null");
+////                    }
+////                }
+////
+////                override fun onServiceDisconnected(p0: ComponentName?) {
+////                    // destroy
+////                }
+////
+////            }
 //
-//                override fun onServiceDisconnected(p0: ComponentName?) {
-//                    // destroy
-//                }
-//
-//            }
-
-//            bindService()
-        } catch (e: Exception) {
-            Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
-        }
-    }
+////            bindService()
+//        } catch (e: Exception) {
+//            Log.d(FlutterWebsocketPlugin::class.java.simpleName, e.toString())
+//        }
+//    }
 
     // connect
-    private fun connect(socketUrl: String) {
+    private fun connect(socketUrl: String, connectionTimeout: Int) {
         service?.initSocketClient(
             socketUrl,
+            connectionTimeout,
             { url -> connectSuccess(url) },
             { code, reason, remote -> connectClose(code, reason, remote) },
             { message: String -> connectError(message) }) { message: String ->

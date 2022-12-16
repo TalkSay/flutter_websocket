@@ -5,8 +5,11 @@ class FlutterWebsocket {
     return FlutterWebsocketPlatform.instance.getPlatformVersion();
   }
 
-  Future<void> connect({required String url}) {
-    return FlutterWebsocketPlatform.instance.connect(url: url);
+  Future<void> connect({required String url, int? connectionTimeout}) {
+    return FlutterWebsocketPlatform.instance.connect(
+      url: url,
+      connectionTimeout: connectionTimeout,
+    );
   }
 
   Future<void> connectClose() {

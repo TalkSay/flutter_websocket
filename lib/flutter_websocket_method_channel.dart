@@ -17,9 +17,12 @@ class MethodChannelFlutterWebsocket extends FlutterWebsocketPlatform {
   }
 
   @override
-  Future<void> connect({required String url}) async {
+  Future<void> connect({required String url, int? connectionTimeout}) async {
     assert(url.isNotEmpty, "Connection url can't be empty");
-    await methodChannel.invokeMethod('connect', {'url': url});
+    await methodChannel.invokeMethod('connect', {
+      'url': url,
+      "connectionTimeout": connectionTimeout ?? 60,
+    });
   }
 
   @override

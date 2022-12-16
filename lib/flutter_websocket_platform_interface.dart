@@ -27,7 +27,7 @@ abstract class FlutterWebsocketPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<void> connect({required String url}) {
+  Future<void> connect({required String url, int? connectionTimeout}) {
     throw UnimplementedError('connect() has not been implemented.');
   }
 

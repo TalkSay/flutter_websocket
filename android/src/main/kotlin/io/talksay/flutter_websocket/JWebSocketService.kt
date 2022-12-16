@@ -17,6 +17,7 @@ object JWebSocketService {
      */
     fun initSocketClient(
         url: String,
+        connectionTimeout: Int,
         success: (url: String) -> Unit,
         close: (code: Int, reason: String?, remote: Boolean) -> Unit,
         error: (message: String) -> Unit,
@@ -59,6 +60,7 @@ object JWebSocketService {
             }
 
         }
+        client?.connectionLostTimeout = connectionTimeout;
         connect()
     }
 
@@ -97,7 +99,7 @@ object JWebSocketService {
 
     // heartbeat interval
     // TODO extract the interval time to be configurable
-    private val sendTime = (8 * 100).toLong()
+    private const val sendTime = (5 * 1000).toLong()
 
     // thread
     private val mHandler: Handler = Handler(Looper.getMainLooper())

@@ -17,7 +17,7 @@ class MockFlutterWebsocketPlatform
   }
 
   @override
-  Future<void> connect({required String url}) {
+  Future<void> connect({required String url, int? connectionTimeout}) {
     // TODO: implement connect
     throw UnimplementedError();
   }
